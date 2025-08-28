@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Eggsotik – Indian Egg Delicacy Restaurant | Coming Soon to DFW</title>
+  <meta name="description" content="Eggsotik is a coming‑soon Indian restaurant in the Dallas–Fort Worth metro area, specializing in exotic egg delicacies. Pop some eggs in our mini‑game while you wait for opening!" />
+  <meta name="keywords" content="Eggsotik, Indian restaurant DFW, Dallas eggs, Fort Worth eggs, egg delicacies, anda bhurji, masala omelette, egg curry, egg keema, street food eggs, coming soon restaurant" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Eggsotik" />
+  <meta name="theme-color" content="#f59e0b" />
+  <meta http-equiv="x-ua-compatible" content="IE=edge" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="Eggsotik – Coming Soon to DFW" />
+  <meta property="og:description" content="A unique Indian restaurant specializing in exotic egg delicacies." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Eggsotik" />
+  <!-- <meta property="og:url" content="https://YOUR-DOMAIN/" /> -->
+  <!-- <meta property="og:image" content="https://YOUR-DOMAIN/social-card.jpg" /> -->
+  <!-- <meta property="og:image:alt" content="Eggsotik – Indian egg delicacies coming soon" /> -->
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Eggsotik – Coming Soon to DFW" />
+  <meta name="twitter:description" content="Indian egg delicacies, reimagined. Pop some eggs while you wait!" />
+  <!-- <meta name="twitter:image" content="https://YOUR-DOMAIN/social-card.jpg" /> -->
+
+  <!-- Structured Data (JSON‑LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Eggsotik",
+    "description": "Indian restaurant (coming soon) featuring exotic egg delicacies.",
+    "servesCuisine": "Indian",
+    "areaServed": "Dallas–Fort Worth metro area",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Dallas–Fort Worth",
+      "addressRegion": "TX",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+
+  <!-- Favicon (simple egg SVG) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 125'%3E%3Cpath fill='%23FFFFFF' d='M50,0 C80,0 100,40 100,75 C100,110 80,125 50,125 C20,125 0,110 0,75 C0,40 20,0 50,0 Z'/%3E%3C/svg%3E">
+
+  <!-- Fonts & Tailwind -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: 'Poppins', sans-serif; }
+    .title-font { font-family: 'Playfair Display', serif; }
+
+    /* GAME LAYER */
+    .game-container {
+      position: fixed; /* cover the viewport and sit above content */
+      inset: 0;
+      overflow: hidden;
+      z-index: 30;
+      pointer-events: none; /* only eggs receive events */
+    }
+    .egg {
+      position: absolute;
+      background: #fff;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      display: block;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
+      pointer-events: auto; /* clickable even though parent ignores */
+      touch-action: manipulation;
+      animation-play-state: running;
+    }
+    .egg:active { transform: scale(0.95); }
+
+    .egg-yolk {
+      background: #FFC72C;
+      border-radius: 50%;
+      position: absolute;
+      width: 50%; height: 50%;
+      top: 25%; left: 25%;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      will-change: opacity;
+      pointer-events: none;
+    }
+
+    .egg.cracked { animation: crack 0.28s forwards; pointer-events: none; }
+    .egg.cracked .egg-yolk { opacity: 1; }
+
+    @keyframes fall {
+      from { transform: translateY(-120px); }
+      to   { transform: translateY(100vh); }
+    }
+    @keyframes crack {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .egg { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-amber-200 via-orange-300 to-rose-300 min-h-screen">
+  <noscript>
+    <div class="p-4 m-4 bg-white/80 rounded-xl shadow">This site works best with JavaScript enabled.</div>
+  </noscript>
+
+  <!-- Game Container: Eggs fall within this layer (above content & clickable) -->
+  <div id="game-container" class="game-container" aria-hidden="true"></div>
+
+  <!-- Main Content -->
+  <div class="relative min-h-screen flex flex-col items-center justify-center p-4 z-10 select-none">
+    <main class="text-center text-gray-800 bg-white/70 backdrop-blur-sm p-8 md:p-12 rounded-2xl shadow-2xl max-w-2xl w-full">
+      <h1 class="title-font text-5xl md:text-7xl font-bold text-amber-600">Eggsotik</h1>
+      <p class="mt-2 text-lg md:text-xl text-gray-700">An Indian Egg Delicacy Experience</p>
+
+      <div class="my-8">
+        <h2 class="text-3xl md:text-4xl font-semibold text-rose-500 animate-pulse">Coming Soon!</h2>
+        <p class="mt-4 max-w-md mx-auto text-gray-700">
+          Get ready to embark on a culinary journey! We're preparing a unique menu where the humble egg is the star, reimagined with exotic Indian spices and flavors.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold">Game: Egg Pop!</h3>
+        <p class="text-sm text-gray-600 mb-2">Pop the falling eggs before they hit the bottom!</p>
+        <div class="text-2xl font-bold bg-white p-2 rounded-lg shadow-inner inline-block">
+          Score: <span id="score" aria-live="polite">0</span>
+        </div>
+        <div class="mt-4">
+          <button id="btn-toggle" class="px-4 py-2 rounded-lg bg-amber-500 text-white font-semibold shadow hover:brightness-95" aria-pressed="true" aria-label="Pause game">Pause</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="absolute bottom-4 text-center w-full">
+      <p class="text-sm text-gray-800">
+        Designed &amp; Developed by: <a href="mailto:info@manpasand.com" class="font-semibold hover:text-rose-600">info@manpasand.com</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // --- Egg Pop: Play/Pause Toggle ---
+    const gameContainer = document.getElementById('game-container');
+    const scoreEl = document.getElementById('score');
+    const toggleBtn = document.getElementById('btn-toggle');
+
+    let score = 0;
+    let eggInterval = null;
+    let isRunning = true;  // game starts running
+    let isPaused  = false; // not paused initially
+    let autoPaused = false; // remembers tab-visibility pause
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function createEgg() {
+      const egg = document.createElement('div');
+      egg.className = 'egg';
+
+      const yolk = document.createElement('div');
+      yolk.className = 'egg-yolk';
+      egg.appendChild(yolk);
+
+      const size = rand(40, 70);
+      egg.style.width = size + 'px';
+      egg.style.height = (size * 1.25) + 'px';
+      egg.style.top = '-120px';
+      egg.style.left = Math.floor(rand(0, Math.max(0, window.innerWidth - size))) + 'px';
+
+      const duration = rand(4, 7).toFixed(2);
+      egg.style.animation = `fall ${duration}s linear forwards`;
+      egg.style.animationPlayState = isPaused ? 'paused' : 'running';
+
+      egg.addEventListener('animationend', () => egg.remove());
+      gameContainer.appendChild(egg);
+    }
+
+    function popEgg(egg) {
+      if (!egg || egg.classList.contains('cracked') || isPaused) return;
+      score++;
+      scoreEl.textContent = String(score);
+      egg.classList.add('cracked');
+      setTimeout(() => egg.remove(), 300);
+    }
+
+    function handlePointer(e) {
+      const t = e.target;
+      if (isPaused) return; // ignore clicks while paused
+      if (t && (t.classList.contains('egg') || t.classList.contains('egg-yolk'))) {
+        e.preventDefault();
+        const egg = t.classList.contains('egg') ? t : t.closest('.egg');
+        if (egg) popEgg(egg);
+      }
+    }
+
+    function startSpawner() {
+      stopSpawner();
+      eggInterval = setInterval(createEgg, 800);
+    }
+    function stopSpawner() {
+      if (eggInterval) clearInterval(eggInterval);
+      eggInterval = null;
+    }
+
+    function startGame() {
+      // Full (re)start: reset score & eggs, run spawner
+      isRunning = true; isPaused = false; autoPaused = false;
+      score = 0; scoreEl.textContent = '0';
+      document.querySelectorAll('.egg').forEach(e => e.remove());
+      startSpawner();
+      setEggsPlayState('running');
+      setToggleUI(true); // pressed = running (shows Pause)
+    }
+
+    function pauseGame({ auto = false } = {}) {
+      if (!isRunning || isPaused) return;
+      isPaused = true; if (auto) autoPaused = true;
+      stopSpawner();
+      setEggsPlayState('paused');
+      setToggleUI(false); // shows Play
+    }
+
+    function resumeGame() {
+      if (!isRunning || !isPaused) return;
+      isPaused = false; autoPaused = false;
+      setEggsPlayState('running');
+      startSpawner();
+      setToggleUI(true); // shows Pause
+    }
+
+    function setEggsPlayState(state) {
+      document.querySelectorAll('.egg').forEach(e => e.style.animationPlayState = state);
+    }
+
+    function setToggleUI(running) {
+      // running=true -> button says "Pause" and aria-pressed=true
+      toggleBtn.textContent = running ? 'Pause' : 'Play';
+      toggleBtn.setAttribute('aria-pressed', String(running));
+      toggleBtn.setAttribute('aria-label', running ? 'Pause game' : 'Play game');
+    }
+
+    function toggleGame() {
+      if (!isRunning) {
+        startGame();
+      } else if (!isPaused) {
+        pauseGame();
+      } else {
+        resumeGame();
+      }
+    }
+
+    // Listeners
+    document.addEventListener('pointerdown', handlePointer, { passive: false });
+    toggleBtn.addEventListener('click', toggleGame);
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') { e.preventDefault(); toggleGame(); }
+    });
+
+    // Auto-pause on tab hide, resume if we paused it automatically
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (isRunning && !isPaused) pauseGame({ auto: true });
+      } else {
+        if (isRunning && isPaused && autoPaused) resumeGame();
+      }
+    });
+
+    // Boot: start running, label should be "Pause"
+    startSpawner();
+    setToggleUI(true);
+  </script>
+</body>
+</html>
